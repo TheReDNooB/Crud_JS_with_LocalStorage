@@ -71,14 +71,26 @@ function EditData(index) {
 }
 
 function DeleteData(index) {
-    if (confirm("¿Estás seguro de que deseas eliminar este elemento?")) {
-        data.splice(index, 1);
-        SaveDataToLocalStorage();
-        UpdateTable();
-    }
-
-
-
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+          data.splice(index, 1);
+          SaveDataToLocalStorage();
+          UpdateTable();
+        }
+      })
 }
 
 function UpdateTable() {
