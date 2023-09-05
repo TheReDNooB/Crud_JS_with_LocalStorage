@@ -1,94 +1,87 @@
-//validates
-function ValidateForm(){
-    let product = document.getElementById("product").value;
-    let price = document.getElementById("price").value;
-    let age = document.getElementById("age").value;
+//chatgpt
+var table = document.getElementById("crudTable").getElementsByTagName('tbody')[0];
+var data = JSON.parse(localStorage.getItem("data")) || [];
+var editIndex = -1;
+var isEditing = false;
 
-    if(product == ""){
-        alert("Product name is required");
-        return false;
+function SaveDataToLocalStorage() {
+    localStorage.setItem("data", JSON.stringify(data));
+}
+
+function AddData() {
+    var product = document.getElementById("product").value;
+    var price = document.getElementById("price").value;
+    var age = document.getElementById("age").value;
+
+    if (product === "" || price === "" || age === "") {
+        alert("Por favor, complete todos los campos.");
+        return;
     }
 
-    if(price == ""){
-        alert("price is required");
-        return false;
+    var row = {
+        product: product,
+        price: price,
+        age: age
+    };
+
+    if (isEditing) {
+        data[editIndex] = row;
+        isEditing = false;
+        document.getElementById("submitButton").innerText = "Add Data";
+    } else {
+        data.push(row);
     }
 
-    if(price < 1){
-        alert("price must be positive number");
-        return false;
-    }
+    document.getElementById("product").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("age").value = "";
 
+    SaveDataToLocalStorage();
+    UpdateTable();
 
-    if(age == ""){
-        alert("age is required");
-        return false;
-    }
-    
-    if(age < 2003){
-        alert("age must be mayor number");
-        return false;
+    alert("Datos agregados exitosamente.");
+}
+
+function EditData(index) {
+    editIndex = index;
+    isEditing = true;
+
+    var selectedItem = data[index];
+
+    document.getElementById("product").value = selectedItem.product;
+    document.getElementById("price").value = selectedItem.price;
+    document.getElementById("age").value = selectedItem.age;
+
+    document.getElementById("submitButton").innerText = "Update Data";
+}
+
+function DeleteData(index) {
+    if (confirm("¿Estás seguro de que deseas eliminar este elemento?")) {
+        data.splice(index, 1);
+        SaveDataToLocalStorage();
+        UpdateTable();
     }
 }
 
+function UpdateTable() {
+    table.innerHTML = "";
 
-//function show data
-function showData(){
-    let productList;
+    data.forEach(function (item, index) {
+        var newRow = table.insertRow(table.length);
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
 
-    if(localStorage.getItem("productsList") == null){
-        productList = [];
-    }else{
-        productList = JSON.parse(localStorage.getItem("productsList"));
-    }
-
-    let html = "";
-
-    productList.forEach(function(element, index) {
-        html += "<tr>";
-        html += "<td>" + element.product + "</td>";
-        html += "<td>" + element.price + "</td>";
-        html += "<td>" + element.age + "</td>";
-        html += '<td><button onclick="deleteData('+index+')" class="btn btn-danger">Delete</button><button onclick="updateData('+index+')" class="btn btn-warning m-2">Edit</button></td>';
-        html += "</tr>";
+        cell1.innerHTML = item.product;
+        cell2.innerHTML = item.price;
+        cell3.innerHTML = item.age;
+        cell4.innerHTML = '<button class="btn btn-warning" onclick="EditData(' + index + ')">Editar</button> ' +
+            '<button class="btn btn-danger" onclick="DeleteData(' + index + ')">Eliminar</button>';
     });
-
-
-    document.querySelector("#crudTable tbody").innerHTML = html;
 }
 
-//loads all data when for document or page loaded
-document.onload = showData();
-
-//function to add data
-
-function AddData(){
-    //if form is validate
-    if(ValidateForm() == true){
-        let product = document.getElementById("product").value;
-        let price = document.getElementById("price").value;
-        let age = document.getElementById("age").value;
+// Cargar los datos desde el almacenamiento local al cargar la página
+UpdateTable();
 
 
-        let productList;
-
-        if(localStorage.getItem("productsList") == null){
-            productList = [];
-        }else{
-            productList =JSON.parse(localStorage.getItem("productsList"));
-        }
-
-        productList.push({
-            product: product,
-            price: price,
-            age: age,
-        });
-
-        localStorage.setItem("productsList", JSON.stringify(productList));
-        showData();
-
-        document.getElementById("product").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("age").value = "";
-    }
-}
