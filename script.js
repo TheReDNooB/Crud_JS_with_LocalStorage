@@ -1,4 +1,3 @@
-//chatgpt
 var table = document.getElementById("crudTable").getElementsByTagName('tbody')[0];
 var data = JSON.parse(localStorage.getItem("data")) || [];
 var editIndex = -1;
@@ -39,7 +38,23 @@ function AddData() {
     SaveDataToLocalStorage();
     UpdateTable();
 
-    alert("Datos agregados exitosamente.");
+    // alert("Datos agregados exitosamente.");
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      
+      Toast.fire({
+        icon: 'success',
+        title: 'data success.'
+      })
 }
 
 function EditData(index) {
@@ -61,6 +76,9 @@ function DeleteData(index) {
         SaveDataToLocalStorage();
         UpdateTable();
     }
+
+
+
 }
 
 function UpdateTable() {
