@@ -2,10 +2,24 @@ body{
     background-color: #1d2630;
 }
 
-*{
+h2{
     color: aliceblue;
 }
+
+label{
+    color: aliceblue;
+}
+
+th{
+    color: aliceblue;
+}
+
+td{
+    color: aliceblue;
+}
+
 
 #Update{
     display: none;
 }
+
