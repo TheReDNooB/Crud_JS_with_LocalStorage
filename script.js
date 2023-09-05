@@ -7,13 +7,34 @@ function SaveDataToLocalStorage() {
     localStorage.setItem("data", JSON.stringify(data));
 }
 
+function ClearInputFields() {
+    document.getElementById("product").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("age").value = "";
+}
+
 function AddData() {
     var product = document.getElementById("product").value;
     var price = document.getElementById("price").value;
     var age = document.getElementById("age").value;
 
     if (product === "" || price === "" || age === "") {
-        alert("Por favor, complete todos los campos.");
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: 'info',
+            title: 'please complete all fields'
+          })
         return;
     }
 
@@ -31,10 +52,7 @@ function AddData() {
         data.push(row);
     }
 
-    document.getElementById("product").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("age").value = "";
-
+    ClearInputFields();
     SaveDataToLocalStorage();
     UpdateTable();
 
@@ -53,7 +71,7 @@ function AddData() {
       
       Toast.fire({
         icon: 'success',
-        title: 'data success.'
+        title: 'data successfully saved'
       })
 }
 
@@ -67,6 +85,22 @@ function EditData(index) {
     document.getElementById("price").value = selectedItem.price;
     document.getElementById("age").value = selectedItem.age;
 
+    const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+    })
+    
+    Toast.fire({
+    icon: 'success',
+    title: 'data successfully updated'
+    })
     document.getElementById("submitButton").innerText = "Update Data";
 }
 
@@ -91,6 +125,8 @@ function DeleteData(index) {
           UpdateTable();
         }
       })
+
+    ClearInputFields(); // Limpia los campos de entrada después de eliminar
 }
 
 function UpdateTable() {
